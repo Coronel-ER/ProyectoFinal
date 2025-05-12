@@ -2,6 +2,6 @@
 
 int main() {
     Juego cetysWings;
-    cetysWings.ejecutar();
+    cetysWings.ejecutar(); //ejecuta el simulador de entregas
     return 0;
 }
