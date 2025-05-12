@@ -10,14 +10,3 @@ void Entrega::entregar() {
 }
 
 void Entrega::dibujar(sf::RenderWindow& ventana) const {
-    if (!entregada) {
-        sf::CircleShape punto(10);
-        punto.setFillColor(sf::Color::Yellow);
-        punto.setPosition(posicion);
-        ventana.draw(punto);
-    }
-}
-
-bool Entrega::estaEntregada() const {
-    return entregada;
-}
