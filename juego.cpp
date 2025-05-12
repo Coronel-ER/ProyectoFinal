@@ -54,14 +54,14 @@ void Juego::actualizar() {
             break;
         }
     }
-    if (todoEntregado && nivelActual < 3) { //Funcion de desbloqueo niveles, limite de 3 niveles
+    if (todoEntregado && nivelActual < 3) {
         nivelActual++;
         std::cout << "¡Nivel " << nivelActual << " desbloqueado!
 ";
     }
 }
 
-void Juego::renderizar() { //Renderizacion de ventana de simulador
+void Juego::renderizar() { 
     ventana.clear(sf::Color::Cyan);
     for (auto& e : entregas)
         e->dibujar(ventana);
