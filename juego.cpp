@@ -40,7 +40,7 @@ void Juego::procesarEventos() {
     dron.mover();
 }
 
-void Juego::actualizar() {
+void Juego::actualizar() { 
     for (auto& e : entregas) {
         if (!e->estaEntregada() && Colisiones::detectar(dron.getSprite(), e->posicion)) {
             e->entregar();
@@ -54,14 +54,14 @@ void Juego::actualizar() {
             break;
         }
     }
-    if (todoEntregado && nivelActual < 3) {
+    if (todoEntregado && nivelActual < 3) { //Funcion de desbloqueo niveles, limite de 3 niveles
         nivelActual++;
         std::cout << "¡Nivel " << nivelActual << " desbloqueado!
 ";
     }
 }
 
-void Juego::renderizar() {
+void Juego::renderizar() { //Renderizacion de ventana de simulador
     ventana.clear(sf::Color::Cyan);
     for (auto& e : entregas)
         e->dibujar(ventana);
