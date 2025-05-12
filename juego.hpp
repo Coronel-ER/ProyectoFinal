@@ -1,5 +1,4 @@
-#ifndef JUEGO_HPP
-#define JUEGO_HPP
+#define juego.hpp todavia no existe
 
 #include <SFML/Graphics.hpp>
 #include "Dron.hpp"
@@ -22,5 +21,3 @@ public:
     void actualizar();
     void renderizar();
 };
-
-#endif
