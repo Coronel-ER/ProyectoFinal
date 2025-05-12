@@ -1,9 +1,9 @@
 #define juego.hpp todavia no existe
 
 #include <SFML/Graphics.hpp>
-#include "Dron.hpp"
-#include "Entrega.hpp"
-#include "EntregaEspecial.hpp"
+#include "Dron.hpp"//no existe
+#include "Entrega.hpp"//no esta terminada
+#include "EntregaEspecial.hpp"// no existe
 #include "Colisiones.hpp"
 #include <vector>
 
