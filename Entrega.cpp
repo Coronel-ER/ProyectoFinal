@@ -17,7 +17,7 @@ public:
 	virtual void Entregas() {
 		if (entregado == true) {
 			cout << "La entrega ha sido completada exitosamente, +1000 puntos \n";
-			puntuacion = puntuacion + 1000;
+			subirPuntuacion(1000);
 		}
 	}
 	virtual ~Entrega() {}
@@ -32,7 +32,7 @@ public:
 	void Entregas() override {
 		if (entregado == true) {
 			cout << "La entrega especial ha sido completada exitosamente +2000 puntos \n";
-			puntuacion = puntuacion + 2000;
+			subirPuntuacion(2000);
 		}
 	}
 
