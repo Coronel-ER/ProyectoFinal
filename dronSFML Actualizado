@@ -3,31 +3,47 @@
 int main() {
     sf::RenderWindow window(sf::VideoMode(800, 600), "Dron sobre campo verde");
     window.setFramerateLimit(60);
-// Estoy cargando la textura del dron desde un archivo (no salio)
+
+    // Se carga imagen del dron para el sprite
     sf::Texture droneTexture;
     if (!droneTexture.loadFromFile("dron.png")) {
         return -1;// Si no se puede cargar, sale con error
-    }
+    };
 
+    // Creacion del sprite
     sf::Sprite droneSprite;
-    droneSprite.setTexture(droneTexture);
-    droneSprite.setScale(0.3f, 0.3f);// esta creo que la voy a hacer un poco mas grande dependieno los avances de mis compañeros
-    droneSprite.setPosition(400, 300);
+    droneSprite.setTexture(droneTexture); // Imagen / textura
+    droneSprite.setScale(0.3f, 0.3f); // Escalado / tamano
+    droneSprite.setPosition(400, 300); // Posicion en el centro (800 / 2 y 600 / 2)
 
+    // Velocidad del dron
     const float speed = 5.0f;
 
+    // Ciclo principal
     while (window.isOpen()) {
         sf::Event event;
+
+        // Cerrar ventana
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) droneSprite.move(0, -speed);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) droneSprite.move(0, speed);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) droneSprite.move(-speed, 0);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) droneSprite.move(speed, 0);
-        //pintar el fonde de verde 
+        // Inputs
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)){ 
+            droneSprite.move(0, -speed) // Speed es la cantidad de pixeles que se mueve definida anteriormente
+        };
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)){
+            droneSprite.move(0, speed)
+        };
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)){
+            droneSprite.move(-speed, 0)
+        };
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
+            droneSprite.move(speed, 0)
+        };
+
+        // Display
         window.clear(sf::Color(102, 204, 102));
         window.draw(droneSprite);
         window.display();
