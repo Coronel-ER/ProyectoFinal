@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
-// esta clase esssss elelele eeeefdrxs dron, lo mueve, lo dibuja y listo
+// esta clase es el dron, lo mueve, lo dibuja y listo
 class Dron {
 private:
     sf::Sprite sprite;      // el dibujo 64x64 del dron que se muestra en pantalla
