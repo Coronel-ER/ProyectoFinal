@@ -20,18 +20,7 @@ int mostrarMenu(sf::RenderWindow& window, sf::Font& font) {
         textos.push_back(texto);
     }
 
-    while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
-            if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Up)
-                    seleccion = (seleccion + opciones.size() - 1) % opciones.size();
-                if (event.key.code == sf::Keyboard::Down)
-                    seleccion = (seleccion + 1) % opciones.size();
-                if (event.key.code == sf::Keyboard::Enter)
-                    return seleccion + 1;
+  
             }
         }
 
