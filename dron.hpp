@@ -14,7 +14,7 @@ public:
     Dron();  // constructor, carga la imagen y pone al dron en su posición inicial
     void mover(); // mueve al dron con las teclas 
     void dibujar(sf::RenderWindow& ventana); // dibuja el dron en la ventana que se le pase
-    const sf::Sprite& getSprite() const; // para acceder al sprite (por ejemplo, para colisiones (que no esta listo todavia))   :(
+    const sf::Sprite& getSprite() const; // para acceder al sprite (por ejemplo, para colisiones (que no esta listo todavia))  
 };
 
 #endif
