@@ -9,11 +9,8 @@ using namespace std;
 
 class EntregasEspeciales:: public Entrega {
 
-
 public:
 	EntregasEspeciales(vector<int> posicion, string localizacion, bool entregado) : Entrega(posicion, localizacion, entregado) {}
-
-
   
 	void Entregas() override {
 		if (entregado == true) {
@@ -21,6 +18,6 @@ public:
 			subirPuntuacion(2000);
 		}
 	}
-  ~EntregaEspeciales(){}
+  ~EntregaEspeciales(){cout << "EntregaEspecial ha sido eliminado"}
 
 };
