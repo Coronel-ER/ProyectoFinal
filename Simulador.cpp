@@ -1,31 +1,51 @@
 #include "Simulador.hpp"
 #include "Colisiones.hpp"
 #include <iostream>
+#include <fstream>
 
-Simulador::Simulador() : ventana(sf::VideoMode(800, 600), "CETYSWings - Nivel"), nivelActual(1) {
+Simulador::Simulador() : ventana(sf::VideoMode(800, 600), "CETYSWings - Nivel"),
+                         escenarioActual(1), puntuacion(0), mensajeVisible(false), tiempoMaximo(90.0f) {
     ventana.setFramerateLimit(60);
+
+    if (!fuente.loadFromFile("recursos/arial.ttf")) {
+        std::cerr << "Error: No se pudo cargar la fuente.\n";
+    }
+
+    textoMensaje.setFont(fuente);
+    textoMensaje.setCharacterSize(24);
+    textoMensaje.setFillColor(sf::Color::Yellow);
+    textoMensaje.setPosition(200, 550);
 }
 
-void Simulador::setNivel(int nivel) {
-    nivelActual = nivel;
+void Simulador::setEscenario(int nivel) {
+    escenarioActual = nivel;
+    puntuacion = 0;
     entregas.clear();
+    mensajeVisible = false;
+    relojEscenario.restart();
 
     if (nivel == 1) {
-        entregas.push_back(new Entrega(sf::Vector2f(300, 100), "Zona Río"));
-        entregas.push_back(new Entrega(sf::Vector2f(500, 200), "Playas"));
-        entregas.push_back(new Entrega(sf::Vector2f(400, 300), "Zona Centro"));
-        entregas.push_back(new Entrega(sf::Vector2f(200, 400), "La Presa"));
+        entregas.push_back(std::make_unique<Entrega>(sf::Vector2f(300, 100), "Zona Río"));
+        entregas.push_back(std::make_unique<Entrega>(sf::Vector2f(500, 200), "Playas"));
+        entregas.push_back(std::make_unique<Entrega>(sf::Vector2f(400, 300), "Zona Centro"));
+        entregas.push_back(std::make_unique<Entrega>(sf::Vector2f(200, 400), "La Presa"));
     } else if (nivel == 2) {
-        entregas.push_back(new EntregaEspecial(sf::Vector2f(600, 300), "Otay", 10));
-        entregas.push_back(new Entrega(sf::Vector2f(400, 250), "La Mesa"));
-        entregas.push_back(new EntregaEspecial(sf::Vector2f(150, 350), "El Florido", 15));
-        entregas.push_back(new Entrega(sf::Vector2f(300, 450), "5 y 10"));
+        entregas.push_back(std::make_unique<EntregaEspecial>(sf::Vector2f(600, 300), "Otay", 10));
+        entregas.push_back(std::make_unique<Entrega>(sf::Vector2f(400, 250), "La Mesa"));
+        entregas.push_back(std::make_unique<EntregaEspecial>(sf::Vector2f(150, 350), "El Florido", 15));
+        entregas.push_back(std::make_unique<Entrega>(sf::Vector2f(300, 450), "5 y 10"));
     } else if (nivel == 3) {
-        entregas.push_back(new EntregaEspecial(sf::Vector2f(150, 500), "CETYS Universidad", 20));
-        entregas.push_back(new Entrega(sf::Vector2f(100, 100), "Zona Centro"));
-        entregas.push_back(new EntregaEspecial(sf::Vector2f(600, 150), "Chapultepec", 25));
-        entregas.push_back(new Entrega(sf::Vector2f(250, 350), "Club Campestre"));
+        entregas.push_back(std::make_unique<EntregaEspecial>(sf::Vector2f(150, 500), "CETYS Universidad", 20));
+        entregas.push_back(std::make_unique<Entrega>(sf::Vector2f(100, 100), "Zona Centro"));
+        entregas.push_back(std::make_unique<EntregaEspecial>(sf::Vector2f(600, 150), "Chapultepec", 25));
+        entregas.push_back(std::make_unique<Entrega>(sf::Vector2f(250, 350), "Club Campestre"));
     }
+
+    std::string rutaMapa = "recursos/mapa" + std::to_string(nivel) + ".png";
+    if (!fondoMapaTex.loadFromFile(rutaMapa)) {
+        std::cerr << "Error: No se pudo cargar el mapa del escenario " << nivel << ".\n";
+    }
+    fondoMapa.setTexture(fondoMapaTex);
 }
 
 void Simulador::ejecutar() {
@@ -33,6 +53,12 @@ void Simulador::ejecutar() {
         procesarEventos();
         actualizar();
         renderizar();
+
+        if (relojEscenario.getElapsedTime().asSeconds() >= tiempoMaximo || todasEntregasCompletadas()) {
+            guardarPuntaje();
+            mostrarFinDeEscenario();
+            break;
+        }
     }
 }
 
@@ -49,14 +75,73 @@ void Simulador::actualizar() {
     for (auto& e : entregas) {
         if (!e->estaEntregada() && Colisiones::detectar(dron.getSprite(), e->getPosicion())) {
             e->entregar();
+            puntuacion += e->getPuntos();
+            mensajeTexto = "Entrega completada: +" + std::to_string(e->getPuntos()) + " pts";
+            mensajeVisible = true;
+            mensajeTimer.restart();
         }
+    }
+
+    if (mensajeVisible && mensajeTimer.getElapsedTime().asSeconds() > 2.5f) {
+        mensajeVisible = false;
     }
 }
 
 void Simulador::renderizar() {
-    ventana.clear(sf::Color(102, 204, 102));
+    ventana.clear();
+    ventana.draw(fondoMapa);
+
     for (auto& e : entregas)
         e->dibujar(ventana);
+
     dron.dibujar(ventana);
+
+    sf::Text textoPuntaje("Puntos: " + std::to_string(puntuacion), fuente, 20);
+    textoPuntaje.setPosition(10.f, 10.f);
+    textoPuntaje.setFillColor(sf::Color::White);
+    ventana.draw(textoPuntaje);
+
+    float tiempoRestante = tiempoMaximo - relojEscenario.getElapsedTime().asSeconds();
+    sf::Text textoTiempo("Tiempo: " + std::to_string(static_cast<int>(tiempoRestante)) + "s", fuente, 20);
+    textoTiempo.setPosition(650.f, 10.f);
+    textoTiempo.setFillColor(sf::Color::Cyan);
+    ventana.draw(textoTiempo);
+
+    if (mensajeVisible) {
+        textoMensaje.setString(mensajeTexto);
+        ventana.draw(textoMensaje);
+    }
+
     ventana.display();
 }
+
+bool Simulador::todasEntregasCompletadas() {
+    for (const auto& e : entregas) {
+        if (!e->estaEntregada())
+            return false;
+    }
+    return true;
+}
+
+void Simulador::guardarPuntaje() {
+    std::ofstream archivo("puntaje.txt", std::ios::app);
+    archivo << "Escenario " << escenarioActual << ": " << puntuacion << " puntos" << std::endl;
+    archivo.close();
+}
+
+void Simulador::mostrarFinDeEscenario() {
+    ventana.clear(sf::Color::Black);
+    sf::Text fin("ESCENARIO COMPLETADO", fuente, 40);
+    fin.setFillColor(sf::Color::Green);
+    fin.setPosition(180, 250);
+    ventana.draw(fin);
+
+    sf::Text puntos("Puntaje final: " + std::to_string(puntuacion), fuente, 24);
+    puntos.setPosition(260, 320);
+    puntos.setFillColor(sf::Color::White);
+    ventana.draw(puntos);
+
+    ventana.display();
+    sf::sleep(sf::seconds(4));
+}
+
