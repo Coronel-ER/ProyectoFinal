@@ -4,33 +4,48 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <memory>
+#include <string>
 #include "Dron.hpp"
 #include "Entrega.hpp"
 #include "EntregaEspecial.hpp"
 
 class Simulador {
 private:
-    sf::RenderWindow ventana;                     // Ventana de simulación
-    Dron dron;                                    // El dron del jugador
-    std::vector<std::unique_ptr<Entrega>> entregas; // Lista de entregas
-    int escenarioActual;                          // Escenario actual (1, 2 o 3)
+    sf::RenderWindow ventana;                     // Ventana del juego
+    Dron dron;                                    // Dron del jugador
+    std::vector<std::unique_ptr<Entrega>> entregas; // Entregas activas
+    int escenarioActual;                          // Número del escenario (nivel)
     int puntuacion;                               // Puntos acumulados
 
-    sf::Font fuente;                              // Fuente para mostrar texto
-    sf::Texture fondoMapaTex;                     // Textura del fondo de mapa
-    sf::Sprite fondoMapa;                         // Sprite del fondo
+    sf::Font fuente;                              // Fuente para textos
+    sf::Texture fondoMapaTex;                     // Textura del mapa
+    sf::Sprite fondoMapa;                         // Sprite para el fondo del mapa
 
-    // Métodos internos del juego
-    void procesarEventos();   // Maneja teclado, cerrar ventana
-    void actualizar();        // Detecta entregas realizadas
-    void renderizar();        // Dibuja todo
-    void cargarEscenario(int nivel); // Carga entregas y elementos del escenario
+    // Sistema de mensajes temporales
+    std::string mensajeTexto;
+    bool mensajeVisible;
+    sf::Text textoMensaje;
+    sf::Clock mensajeTimer;
+
+    // Temporizador del escenario
+    sf::Clock relojEscenario;
+    float tiempoMaximo; // en segundos
+
+    // Métodos internos
+    void procesarEventos();
+    void actualizar();
+    void renderizar();
+    bool todasEntregasCompletadas();
+    void guardarPuntaje();
+    void mostrarFinDeEscenario();
 
 public:
-    Simulador();              // Constructor
-    void setEscenario(int nivel); // Cambia el escenario activo
-    void ejecutar();          // Loop principal del juego
+    Simulador();                      // Constructor
+    void setEscenario(int nivel);    // Carga el escenario correspondiente
+    void ejecutar();                 // Loop principal del simulador
 };
+
+#endif
 
 #endif
 
