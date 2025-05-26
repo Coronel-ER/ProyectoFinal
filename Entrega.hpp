@@ -7,17 +7,34 @@
 class Entrega {
 protected:
     sf::Vector2f posicion;
-    std::string destino;
     bool entregada;
-    sf::CircleShape forma;
+    std::string nombreZona;
+    int puntos;
+    sf::CircleShape figura;
 
 public:
-    Entrega(const sf::Vector2f& pos, const std::string& dest);
-    virtual ~Entrega() {}
-    virtual void entregar();
+    Entrega(sf::Vector2f pos, const std::string& nombre);
+    virtual ~Entrega();
+
     virtual void dibujar(sf::RenderWindow& ventana);
-    bool estaEntregada() const;
-    sf::Vector2f getPosicion() const;
+    virtual void entregar();
+
+    virtual bool estaEntregada() const;
+    virtual sf::Vector2f getPosicion() const;
+    virtual int getPuntos() const;
+};
+
+class EntregaEspecial : public Entrega {
+private:
+    int bono;
+
+public:
+    EntregaEspecial(sf::Vector2f pos, const std::string& nombre, int bono);
+    virtual ~EntregaEspecial();
+
+    virtual void dibujar(sf::RenderWindow& ventana) override;
+    virtual void entregar() override;
+    virtual int getPuntos() const override;
 };
 
 #endif
