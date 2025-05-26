@@ -1,23 +1,21 @@
 #include "Entrega.hpp"
 #include <iostream>
 
-Entrega::Entrega(const sf::Vector2f& pos, const std::string& dest)
-    : posicion(pos), destino(dest), entregada(false) {
-    forma.setRadius(10.f);
-    forma.setFillColor(sf::Color::Red);
-    forma.setPosition(posicion);
+Entrega::Entrega(sf::Vector2f pos, const std::string& nombre)
+    : posicion(pos), entregada(false), nombreZona(nombre), puntos(5), figura(15.f) {
+    figura.setFillColor(sf::Color::Red);
+    figura.setPosition(posicion);
+}
+
+Entrega::~Entrega() {}
+
+void Entrega::dibujar(sf::RenderWindow& ventana) {
+    ventana.draw(figura);
 }
 
 void Entrega::entregar() {
     entregada = true;
-    forma.setFillColor(sf::Color::Green);
-    std::cout << "Entrega realizada en " << destino << "!
-";
-}
-
-void Entrega::dibujar(sf::RenderWindow& ventana) {
-    if (!entregada)
-        ventana.draw(forma);
+    figura.setFillColor(sf::Color::Green);
 }
 
 bool Entrega::estaEntregada() const {
@@ -27,3 +25,29 @@ bool Entrega::estaEntregada() const {
 sf::Vector2f Entrega::getPosicion() const {
     return posicion;
 }
+
+int Entrega::getPuntos() const {
+    return puntos;
+}
+
+EntregaEspecial::EntregaEspecial(sf::Vector2f pos, const std::string& nombre, int bono)
+    : Entrega(pos, nombre), bono(bono) {
+    puntos += bono;
+    figura.setFillColor(sf::Color::Blue);
+}
+
+EntregaEspecial::~EntregaEspecial() {}
+
+void EntregaEspecial::dibujar(sf::RenderWindow& ventana) {
+    ventana.draw(figura);
+}
+
+void EntregaEspecial::entregar() {
+    entregada = true;
+    figura.setFillColor(sf::Color::Cyan);
+}
+
+int EntregaEspecial::getPuntos() const {
+    return puntos;
+}
+
