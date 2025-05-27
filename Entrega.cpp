@@ -7,26 +7,6 @@ using namespace std;
 
 int puntajeTotal = 0;
 
-class Entrega {
-protected:
-	vector<int> posicion;
-	string nombreZona;
-	bool entregada;
-public:
-	Entrega(vector<int> posicion, string localizacion, bool entregada) : posicion(posicion), localizacion(localizacion), entregada(entregada) {}
-
-	virtual void Entregas() {
-		if (entregada == true) {
-			cout << "La entrega ha sido completada exitosamente, +1000 puntos \n";
-			puntajeEntrega(1000);
-		}
-	}
-	void puntajeEntrega(int p) {
-		puntajeTotal += p;
-	}
-	virtual ~Entrega() {}
-};
-
 Entrega::Entrega(sf::Vector2f pos, const std::string& nombre)
     : posicion(pos), entregada(false), nombreZona(nombre), puntos(5), figura(15.f) {
     figura.setFillColor(sf::Color::Red);
@@ -68,19 +48,6 @@ void Entrega::mostrarInfo() const {
 }
 
 // --------- Implementación EntregaEspecial ---------
-
-class EntregaEspecial: public Entrega {
-private:
-    int bono;
-public:
-	EntregaEspecial(vector<int> posicion, string localizacion, bool entregada, int bono) : bono(bono), Entrega(posicion, localizacion, entregada) {}
-
-	void Entregas() override {
-		if (entregada == true) {
-			cout << "La entrega especial ha sido completada exitosamente +2000 puntos \n";
-			puntajeEntrega(1000);
-		}
-	}
 
 };
 EntregaEspecial::EntregaEspecial(sf::Vector2f pos, const std::string& nombre, int bono)
