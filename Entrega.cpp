@@ -24,7 +24,13 @@ void Entrega::entregar() {
     entregada = true;
     figura.setFillColor(sf::Color::Green);
     std::cout << "Entrega en zona \"" << nombreZona << "\" realizada." << std::endl;
+    puntajeEntrega(1000);
 }
+
+void puntajeEntrega(int p) {
+	puntajeTotal += p;
+}
+
 
 bool Entrega::estaEntregada() const {
     return entregada;
@@ -69,6 +75,7 @@ void EntregaEspecial::entregar() {
     entregada = true;
     figura.setFillColor(sf::Color::Cyan);
     cout << "Entrega especial en zona \"" << nombreZona << "\" realizada con bono " << bono << "." << std::endl;
+    puntajeEntrega(1000 + bono);
 }
 
 int EntregaEspecial::getPuntos() const {
