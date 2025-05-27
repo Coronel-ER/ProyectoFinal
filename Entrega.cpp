@@ -1,4 +1,31 @@
 #include "Entrega.hpp"
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+int puntajeTotal = 0;
+
+class Entrega {
+protected:
+	vector<int> posicion;
+	string nombreZona;
+	bool entregada;
+public:
+	Entrega(vector<int> posicion, string localizacion, bool entregada) : posicion(posicion), localizacion(localizacion), entregada(entregada) {}
+
+	virtual void Entregas() {
+		if (entregada == true) {
+			cout << "La entrega ha sido completada exitosamente, +1000 puntos \n";
+			puntajeEntrega(1000);
+		}
+	}
+	void puntajeEntrega(int p) {
+		puntajeTotal += p;
+	}
+	virtual ~Entrega() {}
+};
 
 Entrega::Entrega(sf::Vector2f pos, const std::string& nombre)
     : posicion(pos), entregada(false), nombreZona(nombre), puntos(5), figura(15.f) {
@@ -36,12 +63,26 @@ std::string Entrega::getNombreZona() const {
 }
 
 void Entrega::mostrarInfo() const {
-    std::cout << "Zona: " << nombreZona << ", Pos: (" << posicion.x << ", " << posicion.y << ")"
+    cout << "Zona: " << nombreZona << ", Pos: (" << posicion.x << ", " << posicion.y << ")"
               << ", Puntos: " << puntos << ", Estado: " << (entregada ? "Entregada" : "Pendiente") << std::endl;
 }
 
 // --------- Implementación EntregaEspecial ---------
 
+class EntregaEspecial: public Entrega {
+private:
+    int bono;
+public:
+	EntregaEspecial(vector<int> posicion, string localizacion, bool entregada, int bono) : bono(bono), Entrega(posicion, localizacion, entregada) {}
+
+	void Entregas() override {
+		if (entregada == true) {
+			cout << "La entrega especial ha sido completada exitosamente +2000 puntos \n";
+			puntajeEntrega(1000);
+		}
+	}
+
+};
 EntregaEspecial::EntregaEspecial(sf::Vector2f pos, const std::string& nombre, int bono)
     : Entrega(pos, nombre), bono(bono) {
     puntos += bono; // Bono extra a puntaje base
@@ -60,7 +101,7 @@ void EntregaEspecial::dibujar(sf::RenderWindow& ventana) {
 void EntregaEspecial::entregar() {
     entregada = true;
     figura.setFillColor(sf::Color::Cyan);
-    std::cout << "Entrega especial en zona \"" << nombreZona << "\" realizada con bono " << bono << "." << std::endl;
+    cout << "Entrega especial en zona \"" << nombreZona << "\" realizada con bono " << bono << "." << std::endl;
 }
 
 int EntregaEspecial::getPuntos() const {
@@ -73,5 +114,5 @@ int EntregaEspecial::getBono() const {
 
 void EntregaEspecial::mostrarInfo() const {
     Entrega::mostrarInfo();
-    std::cout << "  Bono extra: " << bono << std::endl;
+    cout << "  Bono extra: " << bono << std::endl;
 }
