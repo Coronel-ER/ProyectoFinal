@@ -2,9 +2,12 @@
 #include "Colisiones.hpp"
 #include <iostream>
 #include <fstream>
+#include <iomanip>  // Para formateo de texto
 
-Simulador::Simulador() : ventana(sf::VideoMode(800, 600), "CETYSWings - Nivel"),
-                         escenarioActual(1), puntuacion(0), mensajeVisible(false), tiempoMaximo(90.0f) {
+Simulador::Simulador()
+    : ventana(sf::VideoMode(800, 600), "CETYSWings - Nivel"),
+      escenarioActual(1), puntuacion(0), mensajeVisible(false), tiempoMaximo(90.0f) {
+
     ventana.setFramerateLimit(60);
 
     if (!fuente.loadFromFile("recursos/arial.ttf")) {
@@ -24,6 +27,7 @@ void Simulador::setEscenario(int nivel) {
     mensajeVisible = false;
     relojEscenario.restart();
 
+    // Carga entregas con diferentes puntos y posiciones
     if (nivel == 1) {
         entregas.push_back(std::make_unique<Entrega>(sf::Vector2f(300, 100), "Zona Río"));
         entregas.push_back(std::make_unique<Entrega>(sf::Vector2f(500, 200), "Playas"));
@@ -41,6 +45,7 @@ void Simulador::setEscenario(int nivel) {
         entregas.push_back(std::make_unique<Entrega>(sf::Vector2f(250, 350), "Club Campestre"));
     }
 
+    // Carga dinámica del mapa de fondo según escenario
     std::string rutaMapa = "recursos/mapa" + std::to_string(nivel) + ".png";
     if (!fondoMapaTex.loadFromFile(rutaMapa)) {
         std::cerr << "Error: No se pudo cargar el mapa del escenario " << nivel << ".\n";
@@ -54,6 +59,7 @@ void Simulador::ejecutar() {
         actualizar();
         renderizar();
 
+        // Termina si se cumple tiempo o se completan entregas
         if (relojEscenario.getElapsedTime().asSeconds() >= tiempoMaximo || todasEntregasCompletadas()) {
             guardarPuntaje();
             mostrarFinDeEscenario();
@@ -76,12 +82,15 @@ void Simulador::actualizar() {
         if (!e->estaEntregada() && Colisiones::detectar(dron.getSprite(), e->getPosicion())) {
             e->entregar();
             puntuacion += e->getPuntos();
+
+            // Mostrar mensaje con puntos obtenidos
             mensajeTexto = "Entrega completada: +" + std::to_string(e->getPuntos()) + " pts";
             mensajeVisible = true;
             mensajeTimer.restart();
         }
     }
 
+    // Ocultar mensaje después de 2.5 segundos
     if (mensajeVisible && mensajeTimer.getElapsedTime().asSeconds() > 2.5f) {
         mensajeVisible = false;
     }
@@ -96,17 +105,20 @@ void Simulador::renderizar() {
 
     dron.dibujar(ventana);
 
+    // Mostrar puntaje actual
     sf::Text textoPuntaje("Puntos: " + std::to_string(puntuacion), fuente, 20);
     textoPuntaje.setPosition(10.f, 10.f);
     textoPuntaje.setFillColor(sf::Color::White);
     ventana.draw(textoPuntaje);
 
+    // Mostrar tiempo restante con formato
     float tiempoRestante = tiempoMaximo - relojEscenario.getElapsedTime().asSeconds();
     sf::Text textoTiempo("Tiempo: " + std::to_string(static_cast<int>(tiempoRestante)) + "s", fuente, 20);
     textoTiempo.setPosition(650.f, 10.f);
     textoTiempo.setFillColor(sf::Color::Cyan);
     ventana.draw(textoTiempo);
 
+    // Mostrar mensajes temporales (ejemplo: puntos)
     if (mensajeVisible) {
         textoMensaje.setString(mensajeTexto);
         ventana.draw(textoMensaje);
@@ -115,7 +127,7 @@ void Simulador::renderizar() {
     ventana.display();
 }
 
-bool Simulador::todasEntregasCompletadas() {
+bool Simulador::todasEntregasCompletadas() const {
     for (const auto& e : entregas) {
         if (!e->estaEntregada())
             return false;
@@ -123,9 +135,9 @@ bool Simulador::todasEntregasCompletadas() {
     return true;
 }
 
-void Simulador::guardarPuntaje() {
+void Simulador::guardarPuntaje() const {
     std::ofstream archivo("puntaje.txt", std::ios::app);
-    archivo << "Escenario " << escenarioActual << ": " << puntuacion << " puntos" << std::endl;
+    archivo << "Escenario " << escenarioActual << ": " << puntuacion << " puntos\n";
     archivo.close();
 }
 
@@ -145,3 +157,12 @@ void Simulador::mostrarFinDeEscenario() {
     sf::sleep(sf::seconds(4));
 }
 
+// Nuevos métodos públicos para controlar tiempo y obtener puntaje
+
+void Simulador::setTiempoMaximo(float segundos) {
+    tiempoMaximo = segundos;
+}
+
+int Simulador::getPuntuacion() const {
+    return puntuacion;
+}
