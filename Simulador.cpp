@@ -83,8 +83,8 @@ void Simulador::actualizar() {
             e->entregar();
             puntuacion += e->getPuntos();
 
-            // Mostrar mensaje con puntos obtenidos
-            mensajeTexto = "Entrega completada: +" + std::to_string(e->getPuntos()) + " pts";
+            // Mensaje de retroalimentación para la entrega completada
+            mensajeTexto = "¡Entrega completada: +" + std::to_string(e->getPuntos()) + " pts!";
             mensajeVisible = true;
             mensajeTimer.restart();
         }
@@ -105,22 +105,30 @@ void Simulador::renderizar() {
 
     dron.dibujar(ventana);
 
-    // Mostrar puntaje actual
+    // Mostrar puntaje
     sf::Text textoPuntaje("Puntos: " + std::to_string(puntuacion), fuente, 20);
     textoPuntaje.setPosition(10.f, 10.f);
     textoPuntaje.setFillColor(sf::Color::White);
     ventana.draw(textoPuntaje);
 
-    // Mostrar tiempo restante con formato
+    // Barra de progreso para el tiempo
     float tiempoRestante = tiempoMaximo - relojEscenario.getElapsedTime().asSeconds();
+    sf::RectangleShape barraTiempo(sf::Vector2f(200, 20));
+    barraTiempo.setFillColor(sf::Color::Green);
+    barraTiempo.setSize(sf::Vector2f(200 * (tiempoRestante / tiempoMaximo), 20));
+    barraTiempo.setPosition(600.f, 10.f);
+    ventana.draw(barraTiempo);
+
+    // Mostrar tiempo restante como texto
     sf::Text textoTiempo("Tiempo: " + std::to_string(static_cast<int>(tiempoRestante)) + "s", fuente, 20);
     textoTiempo.setPosition(650.f, 10.f);
     textoTiempo.setFillColor(sf::Color::Cyan);
     ventana.draw(textoTiempo);
 
-    // Mostrar mensajes temporales (ejemplo: puntos)
+    // Mostrar mensaje temporal de entrega completada
     if (mensajeVisible) {
         textoMensaje.setString(mensajeTexto);
+        textoMensaje.setFillColor(sf::Color::Yellow); // Resalta el mensaje
         ventana.draw(textoMensaje);
     }
 
