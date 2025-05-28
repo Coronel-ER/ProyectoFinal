@@ -13,8 +13,9 @@ private:
 
     std::vector<std::string> opciones;
     std::vector<sf::Text*> textos;
-
     int seleccion;
+
+    void limpiarTextos();
 
 public:
     Menu(sf::RenderWindow& window, sf::Font& font, sf::Font& TitleFont);
