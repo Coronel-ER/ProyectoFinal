@@ -4,11 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 
-/*
- * Clase base Entrega: representa un punto de entrega de paquete.
- * Aplica encapsulamiento: atributos privados, getters y setters.
- * Implementa polimorfismo dinámico con métodos virtuales.
- */
+
 class Entrega {
 protected:
     sf::Vector2f posicion;
