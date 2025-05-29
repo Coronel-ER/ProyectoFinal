@@ -1,57 +1,36 @@
-#ifndef ENTREGA_HPP
-#define ENTREGA_HPP
+#pragma once
 
 #include <SFML/Graphics.hpp>
 #include <string>
 
-/*
- * Clase base Entrega: representa un punto de entrega de paquete.
- * Aplica encapsulamiento: atributos privados, getters y setters.
- * Implementa polimorfismo dinámico con métodos virtuales.
- */
 class Entrega {
 protected:
     sf::Vector2f posicion;
     bool entregada;
     std::string nombreZona;
     int puntos;
-    sf::CircleShape figura; // Representación gráfica simple
+    sf::CircleShape figura;
 
 public:
-    // Constructor
     Entrega(sf::Vector2f pos, const std::string& nombre);
-
-    // Destructor virtual (para herencia segura)
     virtual ~Entrega();
 
-    // Dibuja la entrega (polimorfismo dinámico)
     virtual void dibujar(sf::RenderWindow& ventana);
-
-    // Marca la entrega como realizada
     virtual void entregar();
-
-    // Consultas
     virtual bool estaEntregada() const;
     virtual sf::Vector2f getPosicion() const;
     virtual int getPuntos() const;
 };
 
-/*
- * Clase derivada EntregaEspecial: entrega con bono extra.
- * Sobrescribe métodos virtuales para comportamiento especializado.
- */
 class EntregaEspecial : public Entrega {
 private:
     int bono;
 
 public:
     EntregaEspecial(sf::Vector2f pos, const std::string& nombre, int bono);
-
     virtual ~EntregaEspecial();
 
-    virtual void dibujar(sf::RenderWindow& ventana) override;
-    virtual void entregar() override;
-    virtual int getPuntos() const override;
+    void dibujar(sf::RenderWindow& ventana) override;
+    void entregar() override;
+    int getPuntos() const override;
 };
-
-#endif
