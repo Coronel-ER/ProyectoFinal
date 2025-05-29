@@ -4,13 +4,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-/*
- * Clase Dron
- * - Representa al dron con su sprite, posición, velocidad y control de textura.
- * - Permite mover el dron tanto con teclado como por desplazamiento personalizado (sobrecarga).
- * - Implementa métodos para obtener posición, sprite y control de la textura.
- * - Encapsulamiento completo de atributos.
- */
 class Dron {
 private:
     sf::Sprite sprite;
