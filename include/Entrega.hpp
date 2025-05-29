@@ -1,7 +1,9 @@
-#pragma once
+#ifndef ENTREGA_HPP
+#define ENTREGA_HPP
 
 #include <SFML/Graphics.hpp>
 #include <string>
+
 
 class Entrega {
 protected:
@@ -9,18 +11,27 @@ protected:
     bool entregada;
     std::string nombreZona;
     int puntos;
-    sf::CircleShape figura;
+    sf::CircleShape figura; // Representación gráfica simple
 
 public:
+    // Constructor
     Entrega(sf::Vector2f pos, const std::string& nombre);
+
+    // Destructor virtual (para herencia segura)
     virtual ~Entrega();
 
+    // Dibuja la entrega (polimorfismo dinámico)
     virtual void dibujar(sf::RenderWindow& ventana);
+
+    // Marca la entrega como realizada
     virtual void entregar();
+
+    // Consultas
     virtual bool estaEntregada() const;
     virtual sf::Vector2f getPosicion() const;
     virtual int getPuntos() const;
 };
+
 
 class EntregaEspecial : public Entrega {
 private:
@@ -28,9 +39,12 @@ private:
 
 public:
     EntregaEspecial(sf::Vector2f pos, const std::string& nombre, int bono);
+
     virtual ~EntregaEspecial();
 
-    void dibujar(sf::RenderWindow& ventana) override;
-    void entregar() override;
-    int getPuntos() const override;
+    virtual void dibujar(sf::RenderWindow& ventana) override;
+    virtual void entregar() override;
+    virtual int getPuntos() const override;
 };
+
+#endif
